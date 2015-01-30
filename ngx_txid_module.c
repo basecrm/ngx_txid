@@ -103,9 +103,18 @@ ngx_txid_get(ngx_http_request_t *r, ngx_http_variable_value_t *v, uintptr_t data
         return NGX_ERROR;
     }
 
-    ngx_txid_base32_encode(out, rnd, len);
+    u_char *buf = ngx_pnalloc(r->pool, enclen);
+    if (buf == NULL) {
+        v->valid = 0;
+        v->not_found = 1;
+        return NGX_ERROR;
+    }
+
+    ngx_txid_base32_encode(buf, rnd, len);
 
     v->len = (bits+4)/5; // strip any padding chars
+    v->len += 3; // include additional three characters used in formatting
+    sprintf((char *)out, "%.4s-%.4s-%.4s-%.4s", buf, buf+4, buf+8, buf+12);
     v->data = out;
 
     v->valid = 1;
