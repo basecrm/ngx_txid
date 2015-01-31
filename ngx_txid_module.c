@@ -114,7 +114,7 @@ ngx_txid_get(ngx_http_request_t *r, ngx_http_variable_value_t *v, uintptr_t data
 
     v->len = (bits+4)/5; // strip any padding chars
     v->len += 3; // include additional three characters used in formatting
-    sprintf((char *)out, "%.4s-%.4s-%.4s-%.4s", buf, buf+4, buf+8, buf+12);
+    sprintf((char *)out, "%.5s-%.5s-%.5s-%.5s", buf, buf+5, buf+10, buf+15);
     v->data = out;
 
     v->valid = 1;
